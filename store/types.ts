@@ -1,3 +1,4 @@
+import { SocialState } from '@/models/post/types';
 import { ProfileState } from '@/models/profileState/types';
 
 import { store } from './store';
@@ -7,4 +8,5 @@ export type AppDispatch = typeof store.dispatch;
 
 export interface AppStorage {
   profile: ProfileState;
+  social: SocialState;
 }

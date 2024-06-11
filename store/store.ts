@@ -1,14 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
 
-import profileReducer from './feature/profileSlice';
+import profileReducer, { initialProfileState } from './feature/profileSlice';
+import socialSlice, { initialSocialState } from './feature/socialSlice';
 import type { AppStorage } from './types';
 
 export const INITIAL_DEFAULT_STORE: AppStorage = {
-  profile: {
-    userData: {},
-    editing: false,
-    profileName: '',
-  },
+  profile: initialProfileState,
+  social: initialSocialState,
 };
 
 export const makeStore = (initialUserData: AppStorage) => {
@@ -16,8 +14,11 @@ export const makeStore = (initialUserData: AppStorage) => {
     preloadedState: initialUserData,
     reducer: {
       profile: profileReducer,
+      social: socialSlice,
     },
   });
 };
 
 export const store = makeStore(INITIAL_DEFAULT_STORE);
+
+export type AppStore = ReturnType<typeof makeStore>

@@ -1,18 +1,20 @@
 import { Grid } from '@mui/material';
 
+import postFetcher from '@/apis/postFetcher';
+import UserInformation from '@/components/homepage/Profile/UserInformation';
 import SocialSection from '@/components/homepage/Social';
-import UserInformation from '@/components/homepage/UserInformation';
+import PostWrapper from '@/components/homepage/Social/PostWrapper';
 
-const HomePage = () => {
+const HomePage = async () => {
+  const { postData } = await postFetcher();
+
   return (
-    <Grid container spacing={2}>
-      <Grid xs={12} md={4}>
+    <PostWrapper postData={postData || []}>
+      <Grid justifyContent="center" container spacing={2}>
         <UserInformation />
-      </Grid>
-      <Grid xs={12} md={8}>
         <SocialSection />
       </Grid>
-    </Grid>
+    </PostWrapper>
   );
 };
 

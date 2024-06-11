@@ -3,51 +3,64 @@
 import { ChangeEventHandler, useState } from 'react';
 
 import { SendOutlined } from '@mui/icons-material';
-import { Box, Button, TextField } from '@mui/material';
+import { Box, Button, CircularProgress, TextField } from '@mui/material';
+import dayjs from 'dayjs';
+
+import postMutation from '@/apis/postMutation';
+import useProfileState from '@/hooks/useProfileState';
+import useSocialState from '@/hooks/useSocialState';
+import { Post } from '@/models/post/types';
+import { submitPost, toggleLoading } from '@/store/feature/socialSlice';
+import { useAppDispatch } from '@/store/hooks';
 
 const InputSection = () => {
+  const { submitingPost } = useSocialState();
+  const dispatch = useAppDispatch();
+  const { userData } = useProfileState();
+
+  // local state
   const [postText, setPostText] = useState('');
-  const [posts, setPosts] = useState([
-    { id: 1, name: 'John Doe', pictureUrl: 'url_to_image', timestamp: '2024-06-11T12:00:00Z', text: 'Hello World!' },
-    {
-      id: 2,
-      name: 'Jane Smith',
-      pictureUrl: 'url_to_image',
-      timestamp: '2024-06-10T12:00:00Z',
-      text: 'This is a post!',
-    },
-  ]);
 
   const handlePostChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     setPostText(event.target.value);
   };
 
-  const handlePostSubmit = () => {
-    const newPost = {
-      id: posts.length + 1,
-      name: 'Your Name',
-      pictureUrl: 'url_to_your_picture',
-      timestamp: new Date().toISOString(),
-      text: postText,
+  const handlePostSubmit = async () => {
+    if (!postText) return;
+
+    const newPost: Post = {
+      name: userData.name,
+      authorEmail: userData.email,
+      pictureUrl: `${userData.picture}`,
+      // format to locale string
+      timestamp: dayjs().format(''),
+      text: postText.trim(),
     };
-    setPosts([...posts, newPost]);
+    dispatch(submitPost(newPost));
     setPostText('');
+    try {
+      await postMutation(newPost);
+    } catch (error) {
+    } finally {
+      dispatch(toggleLoading());
+    }
   };
 
   return (
     <Box sx={{ width: '100%' }}>
       <TextField
+        disabled={!userData?.id}
         multiline
         rows={4}
         variant="outlined"
-        placeholder="Write something..."
+        placeholder={userData?.id ? 'Write something...' : 'Login to write post...'}
         value={postText}
         onChange={handlePostChange}
         sx={{ width: '100%' }}
       />
       <div style={{ textAlign: 'right', marginTop: 20 }}>
-        <Button variant="contained" color="primary" onClick={handlePostSubmit}>
-          <SendOutlined fontSize="inherit" />
+        <Button disabled={!postText.trim()} variant="contained" color="primary" onClick={handlePostSubmit}>
+          {submitingPost ? <CircularProgress color="inherit" size={16} /> : <SendOutlined fontSize="inherit" />}
           Post
         </Button>
       </div>

@@ -2,7 +2,7 @@
 
 import { type FormEventHandler } from 'react';
 
-import { Typography } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import dayjs from 'dayjs';
 import dynamic from 'next/dynamic';
 
@@ -21,6 +21,8 @@ const AlertSection = dynamic(() => import('./AlertSection'));
 const UserInformation = () => {
   const { profileName, userData, alert } = useProfileState();
   const dispatch = useAppDispatch();
+
+  if (!userData?.id) return null;
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (evt) => {
     evt.preventDefault();
@@ -42,21 +44,22 @@ const UserInformation = () => {
   };
 
   return (
-    <>
+    <Grid xs={12} md={4}>
       <form style={{ textAlign: 'center' }} onSubmit={handleSubmit}>
-        <AvatarSection />
-        <EditableUser />
+        <>
+          <AvatarSection />
+          <EditableUser />
 
-        <Typography variant="body1" sx={{ mb: 1 }}>
-          Email: {userData.email}
-        </Typography>
-        <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
-          Last Updated At: {dayjs(userData.updatedAt).format('DD MMMM YYYY HH:mm:ss')}
-        </Typography>
-        <FooterSection />
+          <Typography variant="body1" sx={{ mb: 1 }}>
+            Email: {userData.email}
+          </Typography>
+          <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
+            Last Updated At: {dayjs(userData.updatedAt).format('DD MMMM YYYY HH:mm:ss')}
+          </Typography>
+          <FooterSection />
+        </>
       </form>
-      {alert && <AlertSection />}
-    </>
+    </Grid>
   );
 };
 

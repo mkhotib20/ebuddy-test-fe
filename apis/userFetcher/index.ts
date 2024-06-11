@@ -16,9 +16,9 @@ const userDataFetcher = async () => {
   if (isLoggedIn && isGuestRoute) {
     redirect('/', RedirectType.replace);
   }
-  if (!isLoggedIn && !isGuestRoute) {
-    redirect('/login', RedirectType.replace);
-  }
+  // if (!isLoggedIn && !isGuestRoute) {
+  //   redirect('/login', RedirectType.replace);
+  // }
 
   return {
     userData: result.data?.data,

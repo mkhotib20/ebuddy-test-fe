@@ -3,13 +3,13 @@ import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { ProfileAlert, ProfileState } from '@/models/profileState/types';
 import { UserData } from '@/models/userData/types';
 
-const initialState: ProfileState = {
+export const initialProfileState: ProfileState = {
   userData: {},
 };
 
 const profileSlice = createSlice({
   name: 'profile',
-  initialState,
+  initialState: initialProfileState,
   reducers: {
     toggleEditing: (state) => {
       state.editing = !state.editing;
