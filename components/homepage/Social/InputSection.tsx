@@ -43,6 +43,7 @@ const InputSection = () => {
     } catch (error) {
     } finally {
       dispatch(toggleLoading());
+      document.getElementById('postInput')?.focus();
     }
   };
 
@@ -52,6 +53,7 @@ const InputSection = () => {
         disabled={!userData?.id}
         multiline
         rows={4}
+        id="postInput"
         variant="outlined"
         placeholder={userData?.id ? 'Write something...' : 'Login to write post...'}
         value={postText}

@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 
-import { Alert, Container, Grid } from '@mui/material';
+import { Alert, Container, Grid, Skeleton } from '@mui/material';
 import dynamic from 'next/dynamic';
 
 import postFetcher from '@/apis/postFetcher/client';
@@ -47,7 +47,13 @@ const HomePage = () => {
         {posts.map((post, index) => (
           <PostItem post={post} key={post.id || index} />
         ))}
-        {hasNext && posts.length > 0 && <div ref={intersectRef} />}
+
+        {hasNext && posts.length > 0 && (
+          <div ref={intersectRef} style={{ display: 'flex', flexDirection: 'column' }}>
+            <Skeleton height={32} />
+            <Skeleton height={40} width="100%"></Skeleton>
+          </div>
+        )}
       </Container>
     </Grid>
   );
