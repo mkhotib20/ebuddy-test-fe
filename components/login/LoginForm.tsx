@@ -4,11 +4,11 @@ import GoogleIcon from "@mui/icons-material/Google";
 import { Button, CircularProgress } from "@mui/material";
 import useLogin from "../../app/login/repositories/useLogin";
 
-const LoginForm = () => {
+const LoginSection = () => {
   const { loading, loginUser } = useLogin();
 
   return (
-    <div style={{ display: "flex", gap: 20 }}>
+    <div style={{ display: "flex", gap: 20,marginTop:32 }}>
       <Button
         disabled={loading}
         fullWidth
@@ -29,4 +29,4 @@ const LoginForm = () => {
   );
 };
 
-export default LoginForm;
+export default LoginSection;

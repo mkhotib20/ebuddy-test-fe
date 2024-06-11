@@ -1,22 +1,13 @@
-import { Typography } from '@mui/material';
-
-import EndGrid from '../../components/login/EndGrid';
-import LoginForm from '../../components/login/LoginForm';
-import StartGrid from '../../components/login/StartGrid';
+import BrandIdentity from '@/components/login/BrandIdentity';
+import Container from '@/components/login/Container';
+import LoginSection from '@/components/login/LoginForm';
 
 const LoginPage = () => {
   return (
-    <>
-      <StartGrid item xs={12} sm={6}>
-        <Typography variant="h3" gutterBottom>
-          Welcome Back!
-        </Typography>
-        <Typography variant="body1">Please login to your account with provided methods</Typography>
-      </StartGrid>
-      <EndGrid item xs={12} sm={6}>
-        <LoginForm />
-      </EndGrid>
-    </>
+    <Container>
+      <BrandIdentity />
+      <LoginSection />
+    </Container>
   );
 };
 

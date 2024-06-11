@@ -2,14 +2,12 @@ import { PropsWithChildren } from 'react';
 
 import { CssBaseline } from '@mui/material';
 import type { Metadata } from 'next';
-import { Work_Sans } from 'next/font/google';
 
 import userDataFetcher from '@/apis/userFetcher';
 import UserDataProvider from '@/store/providers';
+import AppThemeProvider from '@/theme/Provider';
 
 import './globals.css';
-
-const workSans = Work_Sans({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'Ebuddy Test',
@@ -22,17 +20,19 @@ const RootLayout = async ({ children }: PropsWithChildren<unknown>) => {
   return (
     <html lang="en">
       <CssBaseline />
-      <body className={workSans.className}>
-        <UserDataProvider
-          initialStore={{
-            profile: {
-              userData: userData || {},
-              profileName: userData?.name || '',
-            },
-          }}
-        >
-          {children}
-        </UserDataProvider>
+      <body>
+        <AppThemeProvider>
+          <UserDataProvider
+            initialStore={{
+              profile: {
+                userData: userData || {},
+                profileName: userData?.name || '',
+              },
+            }}
+          >
+            {children}
+          </UserDataProvider>
+        </AppThemeProvider>
       </body>
     </html>
   );
