@@ -10,4 +10,7 @@ export interface Post {
 export interface SocialState {
   posts: Post[];
   submitingPost?: boolean;
+  page: number;
+  hasNext: boolean;
+  fetchingData?: boolean;
 }

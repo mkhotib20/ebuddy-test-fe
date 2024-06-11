@@ -4,6 +4,7 @@ import { CssBaseline } from '@mui/material';
 import type { Metadata } from 'next';
 
 import userDataFetcher from '@/apis/userFetcher';
+import { initialSocialState } from '@/store/feature/socialSlice';
 import StoreProvider from '@/store/providers/StoreProvider';
 import AppThemeProvider from '@/theme/Provider';
 
@@ -25,7 +26,7 @@ const RootLayout = async ({ children }: PropsWithChildren<unknown>) => {
           <StoreProvider
             initialStore={{
               profile: { userData: userData || {}, profileName: userData?.name || '' },
-              social: { posts: [] },
+              social: initialSocialState,
             }}
           >
             {children}

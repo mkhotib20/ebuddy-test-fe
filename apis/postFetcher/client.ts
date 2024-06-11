@@ -1,6 +1,4 @@
-'server only';
-
-import baseFetcher from '../baseFetcher/server';
+import baseFetcher from '../baseFetcher/client';
 import { PostDataResponse } from './types';
 
 const postFetcher = async (page = 1, limit = 10) => {
@@ -10,6 +8,7 @@ const postFetcher = async (page = 1, limit = 10) => {
 
   return {
     postData: result.data?.data,
+    hasNext: result.data?.hasNext,
     postError: result.error,
   };
 };
