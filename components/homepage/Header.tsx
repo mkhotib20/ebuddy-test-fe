@@ -1,21 +1,28 @@
 'use client';
 
 import { type MouseEventHandler, useState } from 'react';
-import { useSelector } from 'react-redux';
 
+import { LogoutOutlined } from '@mui/icons-material';
+import { Button, CircularProgress, useMediaQuery } from '@mui/material';
 import AppBar from '@mui/material/AppBar';
-import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
-import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
+import { setEngine } from 'crypto';
+import { initializeApp } from 'firebase/app';
+import { getAuth } from 'firebase/auth';
+import Image from 'next/image';
 
-import { UserData } from '@/models/userData/types';
+import firebaseConfig from '@/config/firebaseConfig';
+import useProfileState from '@/hooks/useProfileState';
 
 const Header = () => {
-  const userData = useSelector<{ userData: UserData }>((state) => state.userData);
+  const { userData } = useProfileState();
+  const matches = useMediaQuery('(max-width: 768px)');
+
+  const [logginOut, setLogginOut] = useState(false);
 
   const [anchorEl, setAnchorEl] = useState<(EventTarget & HTMLButtonElement) | null>(null);
 
@@ -27,9 +34,15 @@ const Header = () => {
     setAnchorEl(null);
   };
 
-  const handleLogout = () => {
-    console.log('Logout clicked');
-    handleMenuClose();
+  const handleLogout = async () => {
+    try {
+      setLogginOut(true);
+      initializeApp(firebaseConfig);
+      await getAuth().signOut();
+      window.location.href = '/api/auth/logout';
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -39,24 +52,26 @@ const Header = () => {
           E-Buddy
         </Typography>
         <Box>
-          <IconButton
-            size="large"
-            edge="end"
+          <Button
             color="inherit"
             aria-label="account of current user"
             aria-controls="menu-appbar"
             aria-haspopup="true"
             onClick={handleMenuOpen}
           >
-            <Avatar style={{ backgroundColor: 'white' }} alt="User Avatar" src={userData.picture} />
-          </IconButton>
+            <Image
+              width={30}
+              height={30}
+              style={{ backgroundColor: 'white', borderRadius: 30 }}
+              alt="User Avatar"
+              src={userData.picture || ''}
+            />
+            {!matches && <Typography sx={{ ml: '8px' }}>{userData.name}</Typography>}
+          </Button>
           <Menu
             id="menu-appbar"
             anchorEl={anchorEl}
-            anchorOrigin={{
-              vertical: 'top',
-              horizontal: 'right',
-            }}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
             keepMounted
             transformOrigin={{
               vertical: 'top',
@@ -65,7 +80,10 @@ const Header = () => {
             open={Boolean(anchorEl)}
             onClose={handleMenuClose}
           >
-            <MenuItem onClick={handleLogout}>Logout</MenuItem>
+            <MenuItem onClick={handleLogout}>
+              {logginOut ? <CircularProgress color="inherit" size={20} /> : <LogoutOutlined />}
+              Logout
+            </MenuItem>
           </Menu>
         </Box>
       </Toolbar>

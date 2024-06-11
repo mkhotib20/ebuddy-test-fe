@@ -14,6 +14,7 @@ const useLogin = () => {
     try {
       setLoading(true);
       const auth = getAuth();
+
       const provider = new GoogleAuthProvider();
       provider.addScope('profile');
       provider.addScope('email');

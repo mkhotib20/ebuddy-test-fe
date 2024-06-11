@@ -1,33 +1,40 @@
 'use client';
 
-import { useState } from 'react';
+import { ChangeEventHandler } from 'react';
 
-import { TextField } from '@mui/material';
+import { TextField, Typography } from '@mui/material';
 
-import useUserData from '@/hooks/useUserData';
-
-import type { ChangeEvent } from '../models/types';
+import useProfileState from '@/hooks/useProfileState';
+import { setProfileName } from '@/store/feature/profileSlice';
+import { useAppDispatch } from '@/store/hooks';
 
 const EditableUser = () => {
-  const userData = useUserData();
+  const dispatch = useAppDispatch();
+  const { profileName, userData, editing } = useProfileState();
 
-  const [name, setName] = useState(userData.name);
-  const [isEditing, setIsEditing] = useState(false);
+  if (!editing) {
+    return (
+      <Typography variant="h5" sx={{ mb: 2 }}>
+        {userData.name}
+      </Typography>
+    );
+  }
 
-  const handleEditClick = () => {
-    setIsEditing(true);
+  const handleChange: ChangeEventHandler<HTMLInputElement> = (event) => {
+    dispatch(setProfileName(event.currentTarget.value));
   };
 
-  const handleSaveClick = () => {
-    setIsEditing(false);
-    // You can add your save logic here, e.g., sending the updated name to a server
-  };
-
-  const handleChange: ChangeEvent = (event) => {
-    setName(event.target.value);
-  };
-
-  return <TextField label="Name" value={name} onChange={handleChange} fullWidth sx={{ mb: 2 }} />;
+  return (
+    <TextField
+      variant="standard"
+      autoFocus
+      label="Name"
+      value={profileName}
+      onChange={handleChange}
+      fullWidth
+      sx={{ mb: 2 }}
+    />
+  );
 };
 
 export default EditableUser;

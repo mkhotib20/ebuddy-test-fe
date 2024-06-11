@@ -3,7 +3,7 @@ const nextConfig = {
   rewrites: async () => [
     {
       source: '/api/:path*',
-      destination: 'http://localhost:3001/:path*',
+      destination: `${process.env.API_URL}/:path*`,
     },
   ],
   images: {

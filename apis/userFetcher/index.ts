@@ -3,7 +3,7 @@
 import { headers } from 'next/headers';
 import { RedirectType, redirect } from 'next/navigation';
 
-import baseFetcher from '../baseFetcher';
+import baseFetcher from '../baseFetcher/server';
 import { UserDataResponse } from './types';
 
 const userDataFetcher = async () => {

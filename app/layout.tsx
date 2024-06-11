@@ -23,7 +23,16 @@ const RootLayout = async ({ children }: PropsWithChildren<unknown>) => {
     <html lang="en">
       <CssBaseline />
       <body className={workSans.className}>
-        <UserDataProvider initialStore={{ userData: userData || {} }}>{children}</UserDataProvider>
+        <UserDataProvider
+          initialStore={{
+            profile: {
+              userData: userData || {},
+              profileName: userData?.name || '',
+            },
+          }}
+        >
+          {children}
+        </UserDataProvider>
       </body>
     </html>
   );

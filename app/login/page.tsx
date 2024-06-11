@@ -11,7 +11,7 @@ const LoginPage = () => {
         <Typography variant="h3" gutterBottom>
           Welcome Back!
         </Typography>
-        <Typography variant="body1">Please login to your account</Typography>
+        <Typography variant="body1">Please login to your account with provided methods</Typography>
       </StartGrid>
       <EndGrid item xs={12} sm={6}>
         <LoginForm />

@@ -1,60 +1,61 @@
 'use client';
 
-import { useState } from 'react';
+import { type FormEventHandler } from 'react';
 
-import { Button, TextField, Typography } from '@mui/material';
-import Image from 'next/image';
+import { Typography } from '@mui/material';
+import dayjs from 'dayjs';
+import dynamic from 'next/dynamic';
 
-import useUserData from '@/hooks/useUserData';
+import userMutation from '@/apis/userMutation';
+import useProfileState from '@/hooks/useProfileState';
+import { finalizeUpdate, showAlert, toggleLoading, updateUser } from '@/store/feature/profileSlice';
+import { useAppDispatch } from '@/store/hooks';
+
+import AvatarSection from './AvatarSection';
+import EditableUser from './EditableUser';
+import FooterSection from './FooterSection';
+
+// Use dynamic, because conditionally used
+const AlertSection = dynamic(() => import('./AlertSection'));
 
 const UserInformation = () => {
-  const [name, setName] = useState('Muhammad Khotib');
-  const [isEditing, setIsEditing] = useState(false);
-  const userData = useUserData();
+  const { profileName, userData, alert } = useProfileState();
+  const dispatch = useAppDispatch();
 
-  const handleEditClick = () => {
-    setIsEditing(true);
-  };
-
-  const handleSaveClick = () => {
-    setIsEditing(false);
-    // You can add your save logic here, e.g., sending the updated name to a server
-  };
-
-  const handleChange = (event) => {
-    setName(event.target.value);
+  const handleSubmit: FormEventHandler<HTMLFormElement> = async (evt) => {
+    evt.preventDefault();
+    try {
+      const newUserData = { name: profileName };
+      dispatch(updateUser(newUserData));
+      const { mutationError, mutationResponse } = await userMutation(newUserData);
+      if (mutationError) {
+        throw new Error(mutationError.message);
+      }
+      dispatch(finalizeUpdate(mutationResponse?.data || {}));
+    } catch (error) {
+      // handle error here
+      const message = error instanceof Error ? error.message : 'Oops, something went wrong, please try again later';
+      dispatch(showAlert({ message, severity: 'error' }));
+    } finally {
+      dispatch(toggleLoading());
+    }
   };
 
   return (
     <>
-      <Image
-        src="https://lh3.googleusercontent.com/a/ACg8ocKS6jNEQ4B0QGWzb1VuiH6NdJmwO15VE8WIyJqFZpB3JylR0YMhNA=s96-c"
-        width={96}
-        height={96}
-        alt={userData?.name || 'no-image'}
-      />
-      {isEditing ? (
-        <TextField label="Name" value={name} onChange={handleChange} fullWidth sx={{ mb: 2 }} />
-      ) : (
-        <Typography variant="h5" sx={{ mb: 2 }}>
-          {name}
+      <form style={{ textAlign: 'center' }} onSubmit={handleSubmit}>
+        <AvatarSection />
+        <EditableUser />
+
+        <Typography variant="body1" sx={{ mb: 1 }}>
+          Email: {userData.email}
         </Typography>
-      )}
-      <Typography variant="body1" sx={{ mb: 1 }}>
-        Email: mkhotib20@gmail.com
-      </Typography>
-      <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
-        Updated At: 2024-06-10T09:29:01.848Z
-      </Typography>
-      {isEditing ? (
-        <Button variant="contained" color="primary" onClick={handleSaveClick}>
-          Save
-        </Button>
-      ) : (
-        <Button variant="outlined" onClick={handleEditClick}>
-          Edit
-        </Button>
-      )}
+        <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
+          Last Updated At: {dayjs(userData.updatedAt).format('DD MMMM YYYY HH:mm:ss')}
+        </Typography>
+        <FooterSection />
+      </form>
+      {alert && <AlertSection />}
     </>
   );
 };

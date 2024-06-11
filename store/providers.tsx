@@ -3,7 +3,7 @@
 import { PropsWithChildren } from 'react';
 import { Provider } from 'react-redux';
 
-import { makeStore } from './store';
+import { INITIAL_DEFAULT_STORE, makeStore } from './store';
 import type { AppStorage } from './types';
 
 interface UserDataProviderProps {
@@ -11,7 +11,7 @@ interface UserDataProviderProps {
 }
 
 const UserDataProvider = ({ children, initialStore }: PropsWithChildren<UserDataProviderProps>) => {
-  return <Provider store={makeStore(initialStore || { userData: {} })}>{children}</Provider>;
+  return <Provider store={makeStore(initialStore || INITIAL_DEFAULT_STORE)}>{children}</Provider>;
 };
 
 export default UserDataProvider;

@@ -2,20 +2,15 @@
 
 import { headers } from 'next/headers';
 
-type DefaultData = Record<string, unknown>;
+import { GENERIC_ERROR_WORDING } from './const';
+import optionParser from './parser';
+import type { BaseFetchResult, DefaultData, FetchOption } from './types';
 
-interface BaseFetchResult<DT> {
-  data?: DT;
-  error?: Error;
-}
-
-const GENERIC_ERROR_WORDING = 'Oops, something went wrong. Please try again later.';
-
-const baseFetcher = async <DT = DefaultData>(url: string, init?: RequestInit): Promise<BaseFetchResult<DT>> => {
+const serverBaseFetcher = async <DT = DefaultData>(url: string, init?: FetchOption): Promise<BaseFetchResult<DT>> => {
   const currentUrl = process.env.NEXT_PUBLIC_BASE_APP_URL;
 
   const rsp = await fetch(`${currentUrl}${url}`, {
-    ...init,
+    ...optionParser(init),
     headers: headers(),
   });
   const jsonData = await rsp.json();
@@ -27,4 +22,4 @@ const baseFetcher = async <DT = DefaultData>(url: string, init?: RequestInit): P
   return { data: jsonData };
 };
 
-export default baseFetcher;
+export default serverBaseFetcher;

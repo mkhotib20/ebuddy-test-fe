@@ -1,17 +1,21 @@
 import { configureStore } from '@reduxjs/toolkit';
 
-import userDataReducer from './reducers';
+import profileReducer from './feature/profileSlice';
 import type { AppStorage } from './types';
 
 export const INITIAL_DEFAULT_STORE: AppStorage = {
-  userData: {},
+  profile: {
+    userData: {},
+    editing: false,
+    profileName: '',
+  },
 };
 
 export const makeStore = (initialUserData: AppStorage) => {
   return configureStore({
     preloadedState: initialUserData,
     reducer: {
-      userData: userDataReducer,
+      profile: profileReducer,
     },
   });
 };
