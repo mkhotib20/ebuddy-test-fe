@@ -2,32 +2,12 @@
 
 import { PropsWithChildren } from 'react';
 
-import { ThemeProvider, createTheme } from '@mui/material';
-import { Work_Sans } from 'next/font/google';
+import { ThemeProvider } from '@mui/material';
 
-const workSans = Work_Sans({
-  subsets: ['latin'],
-  weight: '500',
-});
+import { appTheme } from './config';
 
 const AppThemeProvider = ({ children }: PropsWithChildren<unknown>) => {
-  return (
-    <ThemeProvider
-      theme={createTheme({
-        palette: {
-          primary: {
-            main: '#027DFC', // Change primary color
-          },
-          secondary: {
-            main: '#f50057', // Change secondary color
-          },
-        },
-        typography: workSans.style,
-      })}
-    >
-      {children}
-    </ThemeProvider>
-  );
+  return <ThemeProvider theme={appTheme}>{children}</ThemeProvider>;
 };
 
 export default AppThemeProvider;
